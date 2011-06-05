@@ -29,12 +29,10 @@ Automatic Installation:
 Manual Installation:
 
 1. Download Linked Pages
-2. Extract the `/linkedpages/` folder from the archive
+2. Extract the `/linked-pages/` folder from the archive
 3. Upload this folder to `../wp-contents/plugins/`
 
 Once installed, activate the plugin and customise it using *Appearance > Widgets* and *Tools > Page Pickers*
-
-In other words, just upload the `/linkedpages/` folder and its contents to your plugins folder.
 
 For more information about plugins and installing them, please review the [managing plugins](http://codex.wordpress.org/Managing_Plugins#Installing_Plugins "Installing Plugins - WordPress Codex") section of the WordPress Codex.
 
