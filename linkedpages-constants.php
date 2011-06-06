@@ -21,7 +21,7 @@ define( 'LPBLOGLINK', 'http://athena.outer-reaches.com/wp/index.php/wiki/advance
 define( 'LPWIKILINK', 'http://athena.outer-reaches.com/wiki/doku.php?id=projects:wp-lp:home' );
 define( 'LPTEXTDOMAIN', 'linked-pages' );
 define( 'LPOPTIONS', 'widget_linked_pages' );
-define( 'LPVERSION', '0.2.1' );
+define( 'LPVERSION', '0.2.2' );
 define( 'LPSITELINK', 'http://athena.outer-reaches.com' );
 define( 'LPLINKEROPTIONS', 'plugin_linked_pages' );
 
