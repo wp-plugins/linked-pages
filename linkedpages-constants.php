@@ -17,12 +17,14 @@
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define( 'LPBLOGLINK', 'http://athena.outer-reaches.com/wp/index.php/wiki/advanced-custom-field-widget' );
+define( 'LPBLOGLINK', 'http://athena.outer-reaches.com/wp/index.php/wiki/linked-pages' );
 define( 'LPWIKILINK', 'http://athena.outer-reaches.com/wiki/doku.php?id=projects:wp-lp:home' );
 define( 'LPTEXTDOMAIN', 'linked-pages' );
 define( 'LPOPTIONS', 'widget_linked_pages' );
-define( 'LPVERSION', '0.2.2' );
+define( 'LPVERSION', '0.2.3' );
 define( 'LPSITELINK', 'http://athena.outer-reaches.com' );
 define( 'LPLINKEROPTIONS', 'plugin_linked_pages' );
+
+define( 'LPCURRENTCONFIGVERSION', '1');
 
 ?>

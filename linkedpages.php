@@ -5,7 +5,7 @@ Plugin uri: http://athena.outer-reaches.com/wiki/doku.php?id=projects:wplp:home
 Description: Displays links to posts which reference the current post using a custom field and provides customisable page picker meta boxes for the editors allowing you to create the links between posts.  For some detailed instructions about it's use, check out my <a href="http://athena.outer-reaches.com/wiki/doku.php?id=projects:wplp:home">wiki</a>.  To report bugs or make feature requests, visit the Outer Reaches Studios <a href="http://mantis.outer-reaches.co.uk">issue tracker</a>, you will need to signup an account to report issues.
 Author: Christina Louise Warne
 Author uri: http://athena.outer-reaches.com/
-Version: 0.2.1
+Version: 0.2.3
 */
 
 /*
@@ -206,11 +206,6 @@ function lp_config_array_from_post( $suffix ) {
 //-------------------------------------------------------------------------------------------------------------------------------------------
 
 function lp_save_config( $config ) {
-    //if ( get_option( LPLINKEROPTIONS ) == "" ) {
-    //    add_option( LPLINKEROPTIONS, $config );
-    //} else {
-    //    update_option( LPLINKEROPTIONS, $config );
-    //}
     delete_option( LPLINKEROPTIONS );
     add_option( LPLINKEROPTIONS, $config );
 }
@@ -563,6 +558,13 @@ add_action('save_post', 'lp_save_meta_boxes');
 
 //-------------------------------------------------------------------------------------------------------------------------------------------
 
+function wp_widget_linked_pages_make_link(&$links,$link,$linkbreak,$pageurl,$pagetitle) {
+    if ($links!='') {
+        $links=$links.$linkbreak;
+    }
+    $links=$links.sprintf($link,$pageurl,$pagetitle);    
+}
+
 // Widget Display Function for the Advanced Custom Field Widget
 function wp_widget_linked_pages( $args, $widget_args = 1 ) {
     // Get hold of the global WP database object
@@ -600,7 +602,18 @@ function wp_widget_linked_pages( $args, $widget_args = 1 ) {
     $postlinks  = apply_filters( 'widget_text', $options[$number]['postlinks'] );
     $prewidget  = apply_filters( 'widget_text', $options[$number]['prewidget'] );
     $postwidget = apply_filters( 'widget_text', $options[$number]['postwidget'] );
-
+    
+    // Version 0.2.3.
+    if ($options['version']>=1) {
+        $searchforsimilar   = ( $options[$number]['searchforsimilar'] );
+        $similarlink        = ($options[$number]['similarlink']!=""?$options[$number]['similarlink']:$link);
+        $similarmode        = (int)$options[$number]['similarlinkmode'];
+    } else {
+        $seachforsimilar = false;
+        $similarlink = '';
+        $similarmode = 0;
+    }
+    
     global $wp;
     $originalquerystring = $wp->query_string;
     $originalqueryvars = $wp->query_vars;
@@ -619,6 +632,22 @@ function wp_widget_linked_pages( $args, $widget_args = 1 ) {
     $ourpost = $realpostlist->post;
     
     if ($realpostlist->is_single()||$realpostlist->is_page()) {
+        $targetid = $ourpost->ID;
+        $targettitle = $ourpost->post_title;
+
+        if ($searchforsimilar) {
+            $ourfielddata = get_post_meta( $targetid, $field, true );
+            
+            if ( $ourfielddata ) {
+                $targetid = $ourfielddata;
+                
+                $parentpost = get_post($targetid);
+                if ($parentpost) {
+                    $targettitle = $parentpost->post_title;
+                }
+            }
+        }
+        
         $linkedpages = $wpdb->get_results(
             "SELECT
                 p.id
@@ -629,7 +658,7 @@ function wp_widget_linked_pages( $args, $widget_args = 1 ) {
                 (p.post_status='publish') AND
                 (p.id=m.post_id) AND
                 (m.meta_key='$field') AND
-                (m.meta_value='$ourpost->ID')");
+                (m.meta_value='$targetid')");
                 
         if ($linkedpages) {
             
@@ -641,21 +670,37 @@ function wp_widget_linked_pages( $args, $widget_args = 1 ) {
                 $pageurl = get_permalink( $pageid );
                 $pagetitle = $pagedata->post_title;
                 
-                if ($links!='') {
-                    $links=$links.$linkbreak;
+                $dolink = true;
+                
+                if ($searchforsimilar) {
+                    if ($pageid==$ourpost->ID) {
+                        $dolink=false;
+                        
+                        switch ($similarmode) {
+                            case 0 :
+                                wp_widget_linked_pages_make_link($links,$similarlink,$linkbreak,$pageurl,$pagetitle);
+                                break;
+                            case 1 :
+                                // Do nothing
+                                break;
+                        }
+                    }
                 }
-                $links=$links.sprintf($link,$pageurl,$pagetitle);    
+                
+                if ($dolink) {
+                    wp_widget_linked_pages_make_link($links,$link,$linkbreak,$pageurl,$pagetitle);
+                }
             }
             
             if ($links!='') {
                 echo $prewidget;
                 if ( $title ) {
                     echo "\n$pretitle";
-                    echo sprintf( $title, $ourpost->ID, $ourpost->post_title );
+                    echo sprintf( $title, $targetid, $targettitle );
                     echo "$posttitle\n";
                 }
                 if ( $body ) {
-                    echo sprintf( $body, $ourpost->ID, $ourpost->post_title );
+                    echo sprintf( $body, $targetid, $targettitle );
                 }
                 echo $prelinks;
                 echo $links;
@@ -684,6 +729,13 @@ function wp_widget_linked_pages_control( $widget_args ) {
     extract( $widget_args, EXTR_SKIP );
     // Get our widget options from the databse
     $options = get_option( LPOPTIONS );
+    
+    //if ( isset( $options['version'] ) ) {
+    //    if ( (int)$options['version']<LPCURRENTCONFIGVERSION ) {
+    //        wp_widget_linked_pages_upgrade_config($options);
+    //    }
+    //}
+    
     // If our array isn't empty, process the options as an array
     if ( !is_array( $options ) )
         $options = array();
@@ -721,6 +773,8 @@ function wp_widget_linked_pages_control( $widget_args ) {
                 
             $field = strip_tags( stripslashes( $widget_linked_pages['field'] ) );
             $title = strip_tags( stripslashes( $widget_linked_pages['title'] ) );
+            $searchforsimilar = ( $widget_linked_pages['searchforsimilar'] != '' );
+            $similarlinkmode = (int)$widget_linked_pages['similarlinkmode'];
             
             // For the optional text, let's carefully process submitted data
             if ( current_user_can( 'unfiltered_html' ) ) {
@@ -733,6 +787,8 @@ function wp_widget_linked_pages_control( $widget_args ) {
                 $postlinks = stripslashes( $widget_linked_pages['postlinks'] );
                 $prewidget = stripslashes( $widget_linked_pages['prewidget'] );
                 $postwidget = stripslashes( $widget_linked_pages['postwidget'] );
+                $similarlink = stripslashes( $widget_linked_pages['similarlink'] );
+                
             } else {
                 $body = stripslashes( wp_filter_post_kses( $widget_linked_pages['body'] ) );
                 $pretitle = stripslashes( wp_filter_post_kses( $widget_linked_pages['pretitle'] ) );
@@ -743,13 +799,19 @@ function wp_widget_linked_pages_control( $widget_args ) {
                 $postlinks = stripslashes( wp_filter_post_kses( $widget_linked_pages['postlinks'] ) );
                 $prewidget = stripslashes( wp_filter_post_kses( $widget_linked_pages['prewidget'] ) );
                 $postwidget = stripslashes( wp_filter_post_kses( $widget_linked_pages['postwidget'] ) );
+                $similarlink = stripslashes( wp_filter_post_kses( $widget_linked_pages['similarlink'] ) );
+                
             }
             
             // We're saving as an array, so save the options as such
             $options[$widget_number] = compact( 
-                'field','title','body','pretitle','posttitle','link','linkbreak','prelinks','postlinks','prewidget','postwidget'
+                'field','title','body','pretitle','posttitle','link','linkbreak','prelinks','postlinks','prewidget','postwidget',
+                // version 0.2.3
+                'searchforsimilar','similarlinkmode','similarlink'
             );
         }
+        
+        $options['version'] = LPCURRENTCONFIGVERSION;
         
         // Update our options in the database
         update_option( LPOPTIONS, $options );
@@ -759,30 +821,46 @@ function wp_widget_linked_pages_control( $widget_args ) {
     
     // Variables to return options in widget menu below
     if ( -1 == $number ) {
-        $field          = '';
-        $title          = '';
-        $body           = '';
-        $pretitle       = esc_attr('<h3 class="widgettitle">');
-        $posttitle      = esc_attr('</h3>');
-        $link           = esc_attr('<li><a href="%1$s">%2$s</a></li>');
-        $linkbreak      = '';
-        $prelinks       = esc_attr('<ul>');
-        $postlinks      = esc_attr('</ul>');
-        $prewidget      = esc_attr('<li>');
-        $postwidget     = esc_attr('</li>');
-        $number         = '%i%';
+        $field              = '';
+        $title              = '';
+        $body               = '';
+        $pretitle           = esc_attr('<h3 class="widgettitle">');
+        $posttitle          = esc_attr('</h3>');
+        $link               = esc_attr('<li><a href="%1$s">%2$s</a></li>');
+        $linkbreak          = '';
+        $prelinks           = esc_attr('<ul>');
+        $postlinks          = esc_attr('</ul>');
+        $prewidget          = esc_attr('<li>');
+        $postwidget         = esc_attr('</li>');
+        $number             = '%i%';
+        
+        // version 0.2.3
+        $searchforsimilar   = false;
+        $similarlinkmode    = 0;  // Default (A link)
+        $similarlink        = esc_attr('<li class="lp-current-page"><a href="%1$s">%2$s</a></li>');
     } else {
-        $field          = esc_attr( $options[$number]['field'] );;
-        $title          = esc_attr( $options[$number]['title'] );
-        $body           = esc_attr( $options[$number]['body'] );
-        $pretitle       = esc_attr( $options[$number]['pretitle'] );
-        $posttitle      = esc_attr( $options[$number]['posttitle'] );
-        $link           = esc_attr( $options[$number]['link'] );
-        $linkbreak      = esc_attr( $options[$number]['linkbreak'] );
-        $prelinks       = esc_attr( $options[$number]['prelinks'] );
-        $postlinks      = esc_attr( $options[$number]['postlinks'] );
-        $prewidget      = esc_attr( $options[$number]['prewidget'] );
-        $postwidget     = esc_attr( $options[$number]['postwidget'] );
+        $field              = esc_attr( $options[$number]['field'] );;
+        $title              = esc_attr( $options[$number]['title'] );
+        $body               = esc_attr( $options[$number]['body'] );
+        $pretitle           = esc_attr( $options[$number]['pretitle'] );
+        $posttitle          = esc_attr( $options[$number]['posttitle'] );
+        $link               = esc_attr( $options[$number]['link'] );
+        $linkbreak          = esc_attr( $options[$number]['linkbreak'] );
+        $prelinks           = esc_attr( $options[$number]['prelinks'] );
+        $postlinks          = esc_attr( $options[$number]['postlinks'] );
+        $prewidget          = esc_attr( $options[$number]['prewidget'] );
+        $postwidget         = esc_attr( $options[$number]['postwidget'] );
+        
+        // Version 0.2.3
+        if (isset($options[$number]['similarlinkmode'])) {
+            $searchforsimilar   = ( $options[$number]['searchforsimilar'] );
+            $similarlinkmode    = (int)$options[$number]['similarlinkmode']; // 0 = Link (uses own format), 1 = Text only, 2 = Remove
+            $similarlink        = esc_attr( $options[$number]['similarlink'] );
+        } else {
+            $searchforsimilar   = false;
+            $similarlinkmode    = 0;
+            $similarlink        = esc_attr('<li class="lp-current-page"><a href="%1$s">%2$s</a></li>');
+        }
     }
     
     // Generate the widget control panel
@@ -792,7 +870,7 @@ function wp_widget_linked_pages_control( $widget_args ) {
     
     <input type="hidden" name="widget-linked-pages[<?php echo $number; ?>][submit]" value="1" />
     
-    <h3>Link Field</h3>
+    <h3><?php _e( 'Link Field', LPTEXTDOMAIN ); ?></h3>
     <p>
         <?php _e( 'Enter the custom field which will be used to find pages that link here', LPTEXTDOMAIN ); ?>
     </p>
@@ -800,7 +878,7 @@ function wp_widget_linked_pages_control( $widget_args ) {
         <label for="linked-pages-field-field-<?php echo $number; ?>"><?php _e( 'Link field:', LPTEXTDOMAIN ); ?></label>
         <input id="linked-pages-field-field-<?php echo $number; ?>" name="widget-linked-pages[<?php echo $number; ?>][field]" class="widefat" type="text" value="<?php echo $field; ?>" />
     </p>
-    <h3>Widget Text</h3>    
+    <h3><?php _e( 'Widget Text', LPTEXTDOMAIN ); ?></h3>    
     <p>
         <?php _e( 'Here you can specify a title, title wrappers, body text and the widget wrappers for the widget', LPTEXTDOMAIN ); ?>
     </p>
@@ -832,7 +910,7 @@ function wp_widget_linked_pages_control( $widget_args ) {
     </p>
     <p><?php _e( '<b>Note:</b> Under normal circumstances, you should not change the widget wrappers!', LPTEXTDOMAIN ); ?></p>
     
-    <h3>Links</h3> 
+    <h3><?php _e( 'Links', LPTEXTDOMAIN ); ?></h3> 
     <p>
         <?php _e( 'Here you can specify the link format, link breaker (inserted between two links - if using a list as a wrapper, this is not needed) and the link list wrappers', LPTEXTDOMAIN ); ?>
     </p>
@@ -853,8 +931,27 @@ function wp_widget_linked_pages_control( $widget_args ) {
         <label for="linked-pages-field-postlinks-<?php echo $number; ?>"><?php _e( 'Post Link Wrapper:', LPTEXTDOMAIN ); ?></label>
         <input id="linked-pages-field-postlinks-<?php echo $number; ?>" name="widget-linked-pages[<?php echo $number; ?>][postlinks]" class="widefat" type="text" value="<?php echo $postlinks; ?>" />
     </p>
-
-    <h3>Help and Assistance</h3>
+    
+    <h3><?php _e( 'Search For Similar' , LPTEXTDOMAIN ); ?></h3>
+    <p><?php _e( 'This functionality allows you to find other pages that have the same link field value as the page being displayed.  The current page can either remain in the list as an active link, text or it can be removed.', LPTEXTDOMAIN ); ?></p>    
+    <p>
+        <label for="linked-pages-searchforsimilar-<?php echo $number; ?>"><?php _e( 'Search for similar:', LPTEXTDOMAIN ); ?></label>
+        <input type="checkbox" id="linked-pages-searchforsimilar-<?php echo $number; ?>" name="widget-linked-pages[<?php echo $number; ?>][searchforsimilar]"<?php if ($searchforsimilar) { echo " checked"; } ?> />
+    </p>
+    <p>
+        <label for="linked-pages-field-similarlinkmode-<?php echo $number; ?>"><?php _e('Current Post Display Mode:', LPTEXTDOMAIN ); ?></label>
+        <select id="linked-pages-field-similarlinkmode-<?php echo $number; ?>" name="widget-linked-pages[<?php echo $number; ?>][similarlinkmode]" class="widefat">
+            <option value="0"<?php if ($similarlinkmode==0) { echo " selected"; } ?>><?php _e( 'Appear in list', LPTEXTDOMAIN ); ?></option>
+            <option value="1"<?php if ($similarlinkmode==1) { echo " selected"; } ?>><?php _e( 'Remove from list', LPTEXTDOMAIN ); ?></option>
+        </select>
+    </p>
+    <p>
+        <label for="linked-pages-field-similarlink-<?php echo $number; ?>"><?php _e( 'Link Format:', LPTEXTDOMAIN ); ?></label>
+        <input id="linked-pages-field-similarlink-<?php echo $number; ?>" name="widget-linked-pages[<?php echo $number; ?>][similarlink]" class="widefat" type="text" value="<?php echo $similarlink; ?>" />
+    </p>
+    <p><?php _e( 'When set to \'Appear in list\', this link format will be used unless it is blank.  This allows you to apply special formatting to the current page link.', LPTEXTDOMAIN ); ?></p>
+    
+    <h3><?php _e( 'Help and Assistance', LPTEXTDOMAIN ); ?></h3>
     <p>
         <?php printf( __( 'For assistance with Linked Pages, post your comments on <a href="%1$s" target="_BLANK">my blog</a>, and to read the on-line user manual visit <a href="%2$s" target="_BLANK">my wiki</a>.  <i>Thanks, AthenaOfDelphi</i>', LPTEXTDOMAIN ), LPBLOGLINK, LPWIKILINK ) ?>
     </p>
