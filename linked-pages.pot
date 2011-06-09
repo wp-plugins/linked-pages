@@ -1,10 +1,10 @@
-# Copyright (C) 2011 Christina Louise Warne (aka AthenaOfDelphi) 
+# Copyright (C) 2010 
 # This file is distributed under the same license as the  package.
 msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/linked-pages\n"
-"POT-Creation-Date: 2011-06-05 11:25:22+00:00\n"
+"POT-Creation-Date: 2011-06-09 20:17:33+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,234 +18,283 @@ msgid ""
 "type %1$s to enable linking!"
 msgstr ""
 
-#: linkedpages.php:272 linkedpages.php:283
+#: linkedpages.php:267 linkedpages.php:278
 msgid "Picker ID"
 msgstr ""
 
-#: linkedpages.php:273 linkedpages.php:284
+#: linkedpages.php:268 linkedpages.php:279
 msgid "Title"
 msgstr ""
 
-#: linkedpages.php:274 linkedpages.php:285
+#: linkedpages.php:269 linkedpages.php:280
 msgid "Custom Field"
 msgstr ""
 
-#: linkedpages.php:275 linkedpages.php:286
+#: linkedpages.php:270 linkedpages.php:281
 msgid "Picker On Post Type"
 msgstr ""
 
-#: linkedpages.php:276 linkedpages.php:287
+#: linkedpages.php:271 linkedpages.php:282
 msgid "Link To Post Type"
 msgstr ""
 
-#: linkedpages.php:277 linkedpages.php:288
+#: linkedpages.php:272 linkedpages.php:283
 msgid "Sort Order"
 msgstr ""
 
-#: linkedpages.php:278 linkedpages.php:289
+#: linkedpages.php:273 linkedpages.php:284
 msgid "Comment"
 msgstr ""
 
-#: linkedpages.php:300
+#: linkedpages.php:295
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
-#: linkedpages.php:313 linkedpages.php:490
+#: linkedpages.php:308 linkedpages.php:485
 msgid "Add"
 msgstr ""
 
-#: linkedpages.php:323
+#: linkedpages.php:318
 msgid ""
 "New page picker sidebar was not added - You must specify a custom field "
 "name, the post type on which to use the picker, the post type which will "
 "provide the list of pages and the title for the meta box!"
 msgstr ""
 
-#: linkedpages.php:337
+#: linkedpages.php:332
 msgid "New page picker created"
 msgstr ""
 
-#: linkedpages.php:350
+#: linkedpages.php:345
 msgid "Page picker %s deleted"
 msgstr ""
 
-#: linkedpages.php:354
+#: linkedpages.php:349
 msgid "Deletion of page picker %s failed - Page picker does not exist!"
 msgstr ""
 
-#: linkedpages.php:385
+#: linkedpages.php:380
 msgid "Picker %s updated successfully"
 msgstr ""
 
-#: linkedpages.php:388
+#: linkedpages.php:383
 msgid ""
 "Changes to picker %s not saved - You must specify a custom field name, the "
 "post type on which to use the picker, the post type which will provide the "
 "list of pages and the title for the meta box!"
 msgstr ""
 
-#: linkedpages.php:392
+#: linkedpages.php:387
 msgid ""
 "To add a picker, use the form at the bottom of the page and click the 'Add' "
 "button in the picker ID"
 msgstr ""
 
-#: linkedpages.php:398
+#: linkedpages.php:393
 msgid "Unknown action!"
 msgstr ""
 
-#: linkedpages.php:404
+#: linkedpages.php:399
 msgid "The security token expired, please try again!"
 msgstr ""
 
-#: linkedpages.php:418 linkedpages.php:525
+#: linkedpages.php:413 linkedpages.php:520
 msgid "Linked Page Pickers"
 msgstr ""
 
-#: linkedpages.php:418
+#: linkedpages.php:413
 msgid "Version. %1$s"
 msgstr ""
 
-#: linkedpages.php:434
+#: linkedpages.php:429
 msgid ""
 "Using Linked Page Pickers, you can add page pickers to the post editor "
 "allowing you to store a link from one page to another using custom fields "
 "which can then be displayed with the Linked Pages widget."
 msgstr ""
 
-#: linkedpages.php:438 linkedpages.php:484
+#: linkedpages.php:433 linkedpages.php:479
 msgid "Save"
 msgstr ""
 
-#: linkedpages.php:452
+#: linkedpages.php:447
 msgid "Delete this picker"
 msgstr ""
 
-#: linkedpages.php:452
+#: linkedpages.php:447
 msgid "Are you sure you want to delete this picker?"
 msgstr ""
 
-#: linkedpages.php:479
+#: linkedpages.php:474
 msgid "No page pickers"
 msgstr ""
 
-#: linkedpages.php:516 linkedpages.php:859
+#: linkedpages.php:511 linkedpages.php:956
 msgid ""
 "For assistance with Linked Pages, post your comments on <a href=\"%1$s\" "
 "target=\"_BLANK\">my blog</a>, and to read the on-line user manual visit <a "
 "href=\"%2$s\" target=\"_BLANK\">my wiki</a>.  <i>Thanks, AthenaOfDelphi</i>"
 msgstr ""
 
-#: linkedpages.php:517
+#: linkedpages.php:512
 msgid ""
 "Linked Pages is copyright &copy; 2011 Christina Louise Warne (aka <a href=\"%"
 "1$s\" target=\"_BLANK\">AthenaOfDelphi</a>)"
 msgstr ""
 
-#: linkedpages.php:525
+#: linkedpages.php:520
 msgid "Page Pickers"
 msgstr ""
 
-#: linkedpages.php:791
+#: linkedpages.php:869
 msgid "Linked Pages instance ID (use this with the theme function):"
 msgstr ""
 
-#: linkedpages.php:791
+#: linkedpages.php:869
 msgid "(Unknown - Save the configuration)"
 msgstr ""
 
-#: linkedpages.php:797
+#: linkedpages.php:873
+msgid "Link Field"
+msgstr ""
+
+#: linkedpages.php:875
 msgid "Enter the custom field which will be used to find pages that link here"
 msgstr ""
 
-#: linkedpages.php:800
+#: linkedpages.php:878
 msgid "Link field:"
 msgstr ""
 
-#: linkedpages.php:805
+#: linkedpages.php:881
+msgid "Widget Text"
+msgstr ""
+
+#: linkedpages.php:883
 msgid ""
 "Here you can specify a title, title wrappers, body text and the widget "
 "wrappers for the widget"
 msgstr ""
 
-#: linkedpages.php:808
+#: linkedpages.php:886
 msgid "Pre Title Wrapper:"
 msgstr ""
 
-#: linkedpages.php:812
+#: linkedpages.php:890
 msgid "Widget Title:"
 msgstr ""
 
-#: linkedpages.php:815
+#: linkedpages.php:893
 msgid ""
 "The title can contain %1$s which will be replaced with the post ID and %2$s "
 "which will be replace with the post title."
 msgstr ""
 
-#: linkedpages.php:817
+#: linkedpages.php:895
 msgid "Post Title Wrapper:"
 msgstr ""
 
-#: linkedpages.php:821
+#: linkedpages.php:899
 msgid "Body Text:"
 msgstr ""
 
-#: linkedpages.php:824
+#: linkedpages.php:902
 msgid ""
 "The body text can contain %1$s which will be replaced with the post ID and %2"
 "$s which will be replace with the post title."
 msgstr ""
 
-#: linkedpages.php:826
+#: linkedpages.php:904
 msgid "Pre Widget Wrapper:"
 msgstr ""
 
-#: linkedpages.php:830
+#: linkedpages.php:908
 msgid "Post Widget Wrapper:"
 msgstr ""
 
-#: linkedpages.php:833
+#: linkedpages.php:911
 msgid ""
 "<b>Note:</b> Under normal circumstances, you should not change the widget "
 "wrappers!"
 msgstr ""
 
-#: linkedpages.php:837
+#: linkedpages.php:913
+msgid "Links"
+msgstr ""
+
+#: linkedpages.php:915
 msgid ""
 "Here you can specify the link format, link breaker (inserted between two "
 "links - if using a list as a wrapper, this is not needed) and the link list "
 "wrappers"
 msgstr ""
 
-#: linkedpages.php:840
+#: linkedpages.php:918
 msgid "Pre Link Wrapper:"
 msgstr ""
 
-#: linkedpages.php:844
+#: linkedpages.php:922 linkedpages.php:949
 msgid "Link Format:"
 msgstr ""
 
-#: linkedpages.php:847
+#: linkedpages.php:925
 msgid ""
 "Link format should specify the whole link (including any list item wrappers "
 "you may require).  %1$s is converted into the destination page URL and %2$s "
 "is converted into the destination page title."
 msgstr ""
 
-#: linkedpages.php:849
+#: linkedpages.php:927
 msgid "Link Breaker:"
 msgstr ""
 
-#: linkedpages.php:853
+#: linkedpages.php:931
 msgid "Post Link Wrapper:"
 msgstr ""
 
-#: linkedpages.php:891
+#: linkedpages.php:935
+msgid "Search For Similar"
+msgstr ""
+
+#: linkedpages.php:936
+msgid ""
+"This functionality allows you to find other pages that have the same link "
+"field value as the page being displayed.  The current page can either remain "
+"in the list as an active link, text or it can be removed."
+msgstr ""
+
+#: linkedpages.php:938
+msgid "Search for similar:"
+msgstr ""
+
+#: linkedpages.php:942
+msgid "Current Post Display Mode:"
+msgstr ""
+
+#: linkedpages.php:944
+msgid "Appear in list"
+msgstr ""
+
+#: linkedpages.php:945
+msgid "Remove from list"
+msgstr ""
+
+#: linkedpages.php:952
+msgid ""
+"When set to 'Appear in list', this link format will be used unless it is "
+"blank.  This allows you to apply special formatting to the current page link."
+msgstr ""
+
+#: linkedpages.php:954
+msgid "Help and Assistance"
+msgstr ""
+
+#: linkedpages.php:988
 msgid ""
 "Display links to pages/posts which reference the current page using a custom "
 "field"
 msgstr ""
 
-#: linkedpages.php:900
+#: linkedpages.php:997
 msgid "Linked Pages"
 msgstr ""

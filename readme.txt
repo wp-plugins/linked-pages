@@ -4,7 +4,7 @@ Donate link: http://athena.outer-reaches.com/wiki/doku.php?id=donate
 Tags: custom field, link, widget, post meta, meta, field, sidebar
 Requires at least: 3.0
 Tested up to: 3.1.3
-Stable tag: 0.2.2
+Stable tag: 0.2.3
 
 The Linked Pages plugin allows links between posts to be created using customisable page pickers and then displayed using the built in widget.
 
@@ -37,6 +37,9 @@ Once installed, activate the plugin and customise it using *Appearance > Widgets
 For more information about plugins and installing them, please review the [managing plugins](http://codex.wordpress.org/Managing_Plugins#Installing_Plugins "Installing Plugins - WordPress Codex") section of the WordPress Codex.
 
 == Changelog ==
+
+= 0.2.3 =
+* Added functionality to build the list of linked pages based on the current post's link field (this avoids having to click back from the selected page to pick another from the list of links and makes the widget perform more like a menu than a simple 'what links to here?' function)
 
 = 0.2.2 =
 * Minor change to correct the missing screenshots
